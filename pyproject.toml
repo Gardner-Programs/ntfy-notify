@@ -1,0 +1,29 @@
+[project]
+name = "ntfy-notify"
+version = "0.1.0"
+description = "An MCP server that pushes phone notifications via ntfy."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Isaiah Gardner" }]
+keywords = ["mcp", "ntfy", "notifications", "claude", "cowork"]
+dependencies = [
+    "mcp>=1.2.0",
+    "httpx>=0.27",
+]
+
+[project.urls]
+Homepage = "https://github.com/Gardner-Programs/ntfy-notify"
+
+[project.scripts]
+ntfy-notify = "server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+only-include = ["server.py"]
+
+[tool.hatch.build.targets.wheel.sources]
+"server.py" = "server.py"
