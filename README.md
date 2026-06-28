@@ -1,5 +1,9 @@
 # ntfy-notify
 
+[![CI](https://github.com/Gardner-Programs/ntfy-notify/actions/workflows/ci.yml/badge.svg)](https://github.com/Gardner-Programs/ntfy-notify/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+
 A tiny [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that
 lets Claude / Cowork push notifications to your phone via
 [ntfy](https://ntfy.sh). Point a scheduled task at it and the results land on your

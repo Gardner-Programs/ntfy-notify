@@ -70,9 +70,7 @@ class _FakeResponse:
 
     def raise_for_status(self):
         if self.status_code >= 400:
-            raise server.httpx.HTTPStatusError(
-                "error", request=None, response=self
-            )
+            raise server.httpx.HTTPStatusError("error", request=None, response=self)
 
 
 def test_publish_builds_url_headers_and_body(monkeypatch):
