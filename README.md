@@ -31,6 +31,52 @@ HTTP POST, and it shows up on every subscribed device. There's no account or aut
 for public topics, which means **the topic name is the only secret**, so make it
 long and random.
 
+## How it works
+
+There's no daemon and no always-on process. A **stdio MCP server** is launched
+by the client (Claude/Cowork) as a child process when a session starts, speaks
+JSON-RPC over stdin/stdout, stays idle until a tool is called, and is shut down
+when the session ends.
+
+```
+Claude / Cowork session
+        │  (launches as subprocess, JSON-RPC over stdio)
+        ▼
+   server.py  ──►  @mcp.tool() functions
+        │              send_notification / send_job_alert
+        │  builds one HTTP POST:
+        │    body    = message text
+        │    headers = Title / Priority / Tags / Click / Authorization
+        ▼
+   https://ntfy.sh/<NTFY_TOPIC>
+        │  (pub/sub fan-out)
+        ▼
+   ntfy app on your phone
+```
+
+Key design points:
+
+- **The topic is read from the environment, never hardcoded** (`_config()`). Since
+  the topic name is the only secret in ntfy, this is what makes the repo safe to
+  be public — and it fails loudly with a clear error if `NTFY_TOPIC` is unset.
+- **`@mcp.tool()` turns a plain function into a tool.** The function name, type
+  hints, and docstring become the schema and description that Claude reads to
+  decide when and how to call it.
+- **ntfy has no JSON payload.** The message is the raw request body; everything
+  else (title, priority, tags, click URL, auth token) rides along as HTTP headers.
+- **Every call returns an `OK:` / `FAILED:` status string** so the model knows
+  whether the push actually went out. Network errors and non-2xx responses are
+  caught and reported rather than raised.
+
+## Development
+
+Run the test suite (pure logic + header construction, no network calls):
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
 ## 1. Install the ntfy app and pick a topic
 
 1. Install ntfy on your phone:
